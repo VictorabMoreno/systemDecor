@@ -244,7 +244,7 @@ const Table: React.FC = () => {
         </TableElement>
       )}
       {showSuccessPopup && (
-        <PopupCard type="success" title="Sucesso" text="Cliente excluído com sucesso!" duration={5} />
+        <PopupCard type="success" title="Sucesso" text="Cliente adicionado com sucesso!" duration={5} />
       )}
     </TableContainer>
   );
