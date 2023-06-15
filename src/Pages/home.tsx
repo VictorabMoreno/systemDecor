@@ -5,7 +5,7 @@ import { Container } from "./styles"
 export const Home = ({page, componentPage}:{page:string, componentPage:any}) => {
     return (
         <Container>
-         <SideBar />
+         <SideBar menu={page} />
          <Body page={page} componentPage={componentPage}/>
         </Container>
     )

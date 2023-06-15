@@ -1,5 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { RiPagesFill, RiAddLine, RiCloseLine, RiDeleteBin6Line } from 'react-icons/ri';
+import Form from '../components/Form';
+import { APIBASE } from '../services/api';
+import PopupCard from '../components/ALertsPopUp';
 
 const TableContainer = styled.div`
   width: 100%;
@@ -21,7 +25,8 @@ const TableHeader = styled.th`
   font-size: 12px;
   font-family: poppins;
   font-weight: 600;
-  color:#343442;
+  color: #343442;
+  letter-spacing: 1px;
 `;
 
 const TableCell = styled.td`
@@ -31,7 +36,8 @@ const TableCell = styled.td`
   font-size: 12px;
   font-family: poppins;
   font-weight: 500;
-  color:#343442;
+  color: #343442;
+  min-width: 160px;
 
   &:last-child {
     background-color: transparent;
@@ -41,7 +47,7 @@ const TableCell = styled.td`
 const NameCell = styled.div`
   display: flex;
   align-items: center;
-  font-size:14px;
+  font-size: 14px;
 
   .circle {
     width: 24px;
@@ -58,7 +64,6 @@ const NameCell = styled.div`
   }
 `;
 
-
 const AnimatedBg = styled.div`
   padding: 10px;
   background: #a0c7d5;
@@ -66,71 +71,181 @@ const AnimatedBg = styled.div`
   max-width: 500px;
 `;
 
+const ContainerButtonCreate = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+`;
+
+const ButtonCreate = styled.button`
+  display: flex;
+  align-items: center;
+  background-color: #f2f2f2;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-weight: bold;
+  color: #333;
+  transition: background-color 0.3s;
+  font-family: poppins;
+
+  &:hover {
+    background-color: #e0e0e0;
+  }
+`;
+
+const ButtonText = styled.span`
+  margin-left: 8px;
+`;
+
+const DeleteButton = styled.button`
+  background-color: #be0000;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s;
+  align-items: center;
+  display: flex;
+  padding: 5px 15px;
+  color: white;
+  margin-left:10px ;
+
+  >p {
+    font-size: 12px;
+    font-family: poppins;
+    margin: 0;
+    font-weight: 600;
+    padding-left: 5px;
+  }
+`;
+
 interface TableData {
+  id: number;
   name: string;
   phone: string;
   address: string;
-  eventDate: string;
-  eventSpecs: string;
+  event_date: string;
+  event_specs: string;
 }
 
 const Table: React.FC = () => {
-  const data: TableData[] = [
-    {
-      name: 'John Doe',
-      phone: '1234567890',
-      address: '123 Main St, City',
-      eventDate: '2023-06-15',
-      eventSpecs:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vel urna sed elit eleifend finibus vitae id justo.',
-    },
-    {
-      name: 'Jane Smith',
-      phone: '9876543210',
-      address: '456 Elm St, Town',
-      eventDate: '2023-06-18',
-      eventSpecs:
-        'Nulla ut felis tristique, fermentum lectus id, accumsan nisl. Sed eu massa eget massa pulvinar eleifend et sit amet est.',
-    },
-    {
-      name: 'Mike Johnson',
-      phone: '5555555555',
-      address: '789 Oak Ave, Village',
-      eventDate: '2023-06-20',
-      eventSpecs:
-        'In sed justo vestibulum, posuere enim vitae, gravida lacus. Aliquam erat volutpat. Nullam dignissim convallis urna, vitae semper justo vestibulum eget.',
-    },
-  ];
+  const [creatingJob, setCreatingJob] = useState(false);
+  const [data, setData] = useState<TableData[]>([]);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+
+  const handleFormSubmit = () => {
+    setCreatingJob(false);
+    setShowSuccessPopup(true);
+  };
+
+  const handlePopupClose = () => {
+    setShowSuccessPopup(false);
+  };
+
+  const handleDelete = (id: number) => {
+    // Cria o objeto JSON com o ID
+    const data = {
+      id: id
+    };
+  
+    // Faz a requisição para excluir o cliente pelo ID
+    fetch(`${APIBASE}/delete`, {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer 1234567890', // Adicione o token de autorização aqui
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data), // Converte o objeto em uma string JSON
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        // Atualize os dados após a exclusão
+        setData((prevData) => prevData.filter((item) => item.id !== id));
+        setShowSuccessPopup(true);
+      })
+      .catch((error) => {
+        console.error('Erro ao excluir cliente:', error);
+      });
+  };
+  
+
+  useEffect(() => {
+    // Aqui você faria a requisição à API para buscar os dados
+    // Substitua a URL_API pelo endpoint correto da sua API
+    fetch(`${APIBASE}/clients`, {
+      headers: {
+        'Authorization': 'Bearer 1234567890', // Adicione o token de autorização aqui
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => setData(data));
+  }, []);
+
+  const handleCreateJob = () => {
+    setCreatingJob(!creatingJob);
+  };
 
   return (
     <TableContainer>
-      <TableElement>
-        <thead>
-          <tr>
-            <TableHeader>Name</TableHeader>
-            <TableHeader>Phone</TableHeader>
-            <TableHeader>Address</TableHeader>
-            <TableHeader>Event Date</TableHeader>
-            <TableHeader>Event Specifications</TableHeader>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((item, index) => (
-            <tr key={index}>
-              <TableCell><NameCell>
-                <div className="circle">{item.name.charAt(0)}</div>
-                <strong>{item.name}</strong>
-              </NameCell></TableCell>
-              <TableCell>{item.phone}</TableCell>
-              <TableCell>{item.address}</TableCell>
-              <TableCell>{item.eventDate}</TableCell>
-              <TableCell>
-                <AnimatedBg>{item.eventSpecs}</AnimatedBg>
-              </TableCell>
+      <ContainerButtonCreate>
+        <ButtonCreate onClick={handleCreateJob}>
+          {creatingJob ? (
+            <>
+              <RiCloseLine size={18} />
+              <ButtonText>Cancelar</ButtonText>
+            </>
+          ) : (
+            <>
+              <RiAddLine size={18} />
+              <ButtonText>Novo cliente</ButtonText>
+            </>
+          )}
+        </ButtonCreate>
+      </ContainerButtonCreate>
+      {creatingJob ? (
+        <Form onFormSubmit={handleFormSubmit} />
+      ) : (
+        <TableElement>
+          <thead>
+            <tr>
+              <TableHeader>Nome</TableHeader>
+              <TableHeader>Telefone</TableHeader>
+              <TableHeader>Endereço</TableHeader>
+              <TableHeader>Data do evento</TableHeader>
+              <TableHeader>Especificações do evento</TableHeader>
             </tr>
-          ))}
-        </tbody>
-      </TableElement>
+          </thead>
+          <tbody>
+            {data.map((item) => (
+              <tr key={item.id}>
+                <TableCell>
+                  <NameCell>
+                    <div className="circle">{item.name.charAt(0)}</div>
+                    <strong>{item.name}</strong>
+                  </NameCell>
+                </TableCell>
+                <TableCell>{item.phone}</TableCell>
+                <TableCell>{item.address}</TableCell>
+                <TableCell>{item.event_date}</TableCell>
+                <TableCell>
+                  <AnimatedBg>{item.event_specs}</AnimatedBg>
+                </TableCell>
+               
+                  <DeleteButton onClick={() => handleDelete(item.id)}>
+                    <RiDeleteBin6Line size={20} />
+                    <p>deletar</p>
+                  </DeleteButton>
+                
+              </tr>
+            ))}
+          </tbody>
+        </TableElement>
+      )}
+      {showSuccessPopup && (
+        <PopupCard type="success" title="Sucesso" text="Cliente excluído com sucesso!" duration={5} />
+      )}
     </TableContainer>
   );
 };

@@ -8,6 +8,6 @@ export const Container = styled.div`
 `
 
 export const Grid = styled.div`
- width: 98%;
+ width: 90%;
  margin: auto;
 `

@@ -1,0 +1,1 @@
+export const APIBASE = 'https://geracao10.com.br/TestLaravel/public/index.php'

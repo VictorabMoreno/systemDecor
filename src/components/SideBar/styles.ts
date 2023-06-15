@@ -15,17 +15,18 @@ export const Title = styled.h1`
 export const Grid = styled.div`
  width: 90%;
  margin: auto;
- padding-top: 20px;
- padding-left: 20px;
+ padding: 20px;
 `
 
 export const ContainerMenu = styled.div`
   display: flex;
   align-items: center;
+  height: auto;
   cursor: pointer;
-  padding:  0;
+ padding: 10px;
   text-decoration: none;
   color:#171933;
+  border-radius: 10px;
 `;
 
 export const Icon = styled.span`
@@ -40,12 +41,13 @@ export const MenuText = styled.p`
  font-weight: 500;
  padding-left: 10px;
  color:#343442;
+ margin: 0;
 `
 
 export const MenuContainer = styled.div`
  width: 100%;
  height: auto;
- padding: 30px 0 20px;
+ padding: 10px 0 20px;
  border-bottom: 1px solid #ddd;
 `
 
@@ -54,3 +56,44 @@ export const AlternativeMenuContainer = styled.div`
  height: auto;
  padding: 10px 0 20px;
 `
+
+export const CompanyImage = styled.div`
+ display: flex;
+ align-items: center;
+
+ >img {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+ }
+
+ >p {
+  font-size: 14px;
+  font-family: poppins;
+  font-weight: 500;
+  padding-left: 10px;
+  color:#343442;
+ }
+`
+
+export const LogOut = styled.div`
+  display: flex;
+  align-items: center;
+  height: auto;
+  cursor: pointer;
+ padding: 10px;
+  text-decoration: none;
+  color:#8b0000;
+  border-radius: 10px;
+  margin-top: 10px;
+`;
+
+
+
+export const LogOutText = styled.span`
+ font-size: 14px;
+  font-family: poppins;
+  font-weight: 500;
+  padding-left: 10px;
+ 
+`;
